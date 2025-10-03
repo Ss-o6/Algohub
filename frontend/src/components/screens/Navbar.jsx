@@ -12,10 +12,10 @@ const Navbar=()=>{
   useEffect(()=>{
     const fetchuserdata=async()=>{
          try {
-          const res=await Api.get("/me",{withCredentials:true});
+          const res=await api.get("/me",{withCredentials:true});
           setuser(res.data.user);
          } catch (error) {
-          console.error("Failed to fetch user",err);
+          console.error("Failed to fetch user",error);
           navigate("/login");
          }
     };

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   Box,
   FormControl,
@@ -18,11 +17,12 @@ export default function Register() {
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
-  const navigate=useNavigate();
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
+  // Send OTP
   const handleSendOtp = async () => {
     try {
       const res = await api.post("/generate-otp", { email });
@@ -34,9 +34,10 @@ export default function Register() {
     }
   };
 
+  // Verify OTP
   const handleVerifyOtp = async () => {
     try {
-      const res = await api.post("/validate-otp", { email, otp },{withCredentials:true});
+      const res = await api.post("/validate-otp", { email, otp }, { withCredentials: true });
       alert(res.data.message || "Email verified!");
       setOtpVerified(true);
     } catch (err) {
@@ -45,6 +46,7 @@ export default function Register() {
     }
   };
 
+  // Register user
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!otpVerified) return alert("Verify email first!");
@@ -56,7 +58,7 @@ export default function Register() {
         password,
       });
       alert(res.data.message || "Registration successful!");
-     navigate("/homepage")
+      navigate("/homepage");
     } catch (err) {
       console.error(err);
       alert("Registration failed: " + (err.response?.data?.message || ""));
@@ -98,100 +100,115 @@ export default function Register() {
           gap: 2,
         }}
       >
-        <Typography variant="h4" textAlign="center" sx={{ color: "black", fontWeight: "bold" }}>
+        <Typography
+          variant="h4"
+          textAlign="center"
+          sx={{ color: "black", fontWeight: "bold" }}
+        >
           Register
         </Typography>
 
-        {!otpVerified && (
-          <>
-            <FormControl fullWidth>
-              <FormLabel sx={{ color: "black" }}>Email</FormLabel>
-              <TextField
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={otpVerified}
-              />
-            </FormControl>
+        {/* Email & OTP Section */}
+        <FormControl fullWidth>
+          <FormLabel sx={{ color: "black" }}>Email</FormLabel>
+          <TextField
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={otpVerified}
+          />
+        </FormControl>
 
-            {!otpSent ? (
-              <Button variant="contained" color="primary" onClick={handleSendOtp}>
-                Send OTP
-              </Button>
-            ) : (
-              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                <TextField
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter OTP"
-                  required
-                />
-                <Button variant="contained" color="success" onClick={handleVerifyOtp}>
-                  Verify OTP
-                </Button>
-              </Box>
-            )}
-          </>
-        )}
-
-        {otpVerified && (
-          <>
-            <FormControl fullWidth>
-              <FormLabel sx={{ color: "white" }}>Firstname</FormLabel>
-              <TextField
-                type="text"
-                value={fname}
-                onChange={(e) => setFname(e.target.value)}
-                required
-              />
-            </FormControl>
-
-            <FormControl fullWidth>
-              <FormLabel sx={{ color: "white" }}>Lastname</FormLabel>
-              <TextField
-                type="text"
-                value={lname}
-                onChange={(e) => setLname(e.target.value)}
-                required
-              />
-            </FormControl>
-
-            <FormControl fullWidth>
-              <FormLabel sx={{ color: "white" }}>Password</FormLabel>
-              <TextField
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </FormControl>
-
-            <Button type="submit" variant="contained" color="success">
-              Register
-            </Button>
-
-            <Divider sx={{ color: "white", my: 1 }}>OR</Divider>
-
+        {!otpSent ? (
+          <Button variant="contained" color="primary" onClick={handleSendOtp}>
+            Send OTP
+          </Button>
+        ) : (
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            <TextField
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Enter OTP"
+              required
+            />
             <Button
               variant="contained"
-              color="error"
-              startIcon={<GoogleIcon />}
-              onClick={handleGoogleRegister}
+              color="success"
+              onClick={handleVerifyOtp}
             >
-              Continue with Google
+              Verify OTP
             </Button>
-
-            <Button
-              variant="contained"
-              sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } }}
-              startIcon={<GitHubIcon />}
-              onClick={handleGithubRegister}
-            >
-              Continue with GitHub
-            </Button>
-          </>
+          </Box>
         )}
+
+        <Divider sx={{ my: 2, color: "black" }}>User Details</Divider>
+
+        {/* Always visible but disabled until OTP verified */}
+        <FormControl fullWidth>
+          <FormLabel sx={{ color: "black" }}>Firstname</FormLabel>
+          <TextField
+            type="text"
+            value={fname}
+            onChange={(e) => setFname(e.target.value)}
+            required
+            disabled={!otpVerified}
+            sx={{ "& .MuiInputBase-root.Mui-disabled": { color: "grey.600" } }}
+          />
+        </FormControl>
+
+        <FormControl fullWidth>
+          <FormLabel sx={{ color: "black" }}>Lastname</FormLabel>
+          <TextField
+            type="text"
+            value={lname}
+            onChange={(e) => setLname(e.target.value)}
+            required
+            disabled={!otpVerified}
+            sx={{ "& .MuiInputBase-root.Mui-disabled": { color: "grey.600" } }}
+          />
+        </FormControl>
+
+        <FormControl fullWidth>
+          <FormLabel sx={{ color: "black" }}>Password</FormLabel>
+          <TextField
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={!otpVerified}
+            sx={{ "& .MuiInputBase-root.Mui-disabled": { color: "grey.600" } }}
+          />
+        </FormControl>
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="success"
+          disabled={!otpVerified}
+        >
+          Register
+        </Button>
+
+        <Divider sx={{ color: "black", my: 1 }}>OR</Divider>
+
+        <Button
+          variant="contained"
+          color="error"
+          startIcon={<GoogleIcon />}
+          onClick={handleGoogleRegister}
+        >
+          Continue with Google
+        </Button>
+
+        <Button
+          variant="contained"
+          sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } }}
+          startIcon={<GitHubIcon />}
+          onClick={handleGithubRegister}
+        >
+          Continue with GitHub
+        </Button>
       </Box>
     </Box>
   );

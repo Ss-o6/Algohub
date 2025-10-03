@@ -20,11 +20,11 @@ export const authenticate=async(req,res,next)=>{
 }
 catch(error){
     console.error("Authentication error:"+error);
-    res.status(401).json({messsage:"Invalid or Epired token"});
+    res.status(401).json({messsage:"Invalid or Expired token"});
 }
 };
 export const authorizeadmin=async(req,res,next)=>{
-      if(req.user.role!== admin){
+      if(req.user.role!== "admin"){
         return res.status(403).json({message:"Access denied"})
       }
       next();

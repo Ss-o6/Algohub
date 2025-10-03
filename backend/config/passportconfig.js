@@ -15,25 +15,29 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0].value;
-        let us = await User.findOne({ email });
+        let user = await User.findOne({ email });
 
-        if (us) {
-          if (!us.googleId) {
-            us.googleId = profile.id;
-            us.isOAuthUser = true;
-            await us.save();
+        if (user) {
+          if (!user.googleId) {
+            user.googleId = profile.id;
+            user.isOAuthUser = true;
+            await user.save();
           }
         } else {
-          us = await User.create({
+          const [fname, ...rest] = (profile.displayName || "User").split(" ");
+          const lname = rest.join(" ") || " ";
+          user = await User.create({
             googleId: profile.id,
-            name: profile.displayName,
-            email: email,
+            fname,
+            lname,
+            email,
             username: email.split("@")[0],
             isOAuthUser: true,
+            role: "user", // default role
           });
         }
 
-        done(null, us);
+        done(null, user);
       } catch (error) {
         done(error, null);
       }
@@ -47,8 +51,8 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "github/callback", 
-      scope: ["user:email"], 
+      callbackURL: "/github/callback",
+      scope: ["user:email"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -59,9 +63,7 @@ passport.use(
         } else {
           const emailResponse = await axios.get(
             "https://api.github.com/user/emails",
-            {
-              headers: { Authorization: `token ${accessToken}` },
-            }
+            { headers: { Authorization: `token ${accessToken}` } }
           );
           const primaryEmail = emailResponse.data.find(
             (e) => e.primary && e.verified
@@ -69,34 +71,37 @@ passport.use(
           email = primaryEmail ? primaryEmail.email : null;
         }
 
-        if (!email) {
-          throw new Error("No email found for GitHub user");
-        }
+        if (!email) throw new Error("No email found for GitHub user");
 
-        let us = await User.findOne({ email });
+        let user = await User.findOne({ email });
 
-        if (us) {
-          if (!us.githubId) {
-            us.githubId = profile.id;
-            us.isOAuthUser = true;
-            await us.save();
+        if (user) {
+          if (!user.githubId) {
+            user.githubId = profile.id;
+            user.isOAuthUser = true;
+            await user.save();
           }
         } else {
-          us = await User.create({
+          const [fname, ...rest] = (profile.displayName || profile.username || "User").split(" ");
+          const lname = rest.join(" ") || " ";
+          user = await User.create({
             githubId: profile.id,
-            name: profile.displayName || profile.username, // ✅ safe fallback
-            email: email,
+            fname,
+            lname,
+            email,
             username: profile.username,
             isOAuthUser: true,
+            role: "user",
           });
         }
 
-        done(null, us);
+        done(null, user);
       } catch (error) {
         done(error, null);
       }
     }
   )
 );
+
 
 export default passport;

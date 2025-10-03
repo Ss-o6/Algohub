@@ -2,10 +2,12 @@ import React from "react";
 
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 //import "react-toastify/dist/ReactToastify.css";
-import Login from "./components/screens/login.jsx";
-import Register from "./components/screens/register.jsx"
+import Login from "./components/screens/Login.jsx";
+import Register from "./components/screens/Register.jsx"
 import Dashboards from "./components/screens/Dashboards.jsx";
 import Homepage from "./components/screens/Homepage.jsx";
+import Problempage from "./components/screens/Problempage.jsx";
+import Createproblem from "./components/screens/Create-problem.jsx";
 const App=()=>{
   return (
     <BrowserRouter>
@@ -15,6 +17,8 @@ const App=()=>{
        <Route path="/login" element={<Login/>}/>
        <Route path="/register" element={<Register/>}/>
        <Route path="/homepage" element={<Homepage/>}/>
+       <Route path="/problems" element={<Problempage/>}/>
+       <Route path="/create-problem" element={<Createproblem/>}/>
       </Routes>
     </BrowserRouter>
   )

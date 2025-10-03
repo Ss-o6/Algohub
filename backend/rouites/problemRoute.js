@@ -5,10 +5,20 @@ import{authenticate, authorizeadmin} from "../middleware/requireauth.js";
 const router=express.Router();
 router.get("/problems",authenticate,async(req,res)=>{
      try {
-        const problem=await Problem.find({});
-        res.json({Problems:problem});
+        const problems=await Problem.find({});
+        const solvedids= req.user.solvedproblems.map(p=>p.problemID.toString());
+        const problemwithstatus=problems.map(p=>({
+            _id:p._id,
+            title:p.title,
+            difficulty:p.difficulty,
+            solved:solvedids.includes(p._id.toString()),
+        }));
+        res.json({
+            user:req.user,
+            problems:problemwithstatus});
      } catch (error) {
         res.status(500).json({message:"Failed to fetch problems",error:error.message});
+        
         
      }
 });

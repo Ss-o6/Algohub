@@ -140,7 +140,9 @@ res.cookie("token",token,{
   sameSite:"strict",
   maxAge:60*1000*60
 });
-res.redirect("/homepage");
+res.redirect("http://localhost:5173/homepage");
+
+
 });
 router.get("/github",passport.authenticate("github",{scope:["user:email"]}));
 router.get("/github/callback",passport.authenticate("github",{session:false,failureRedirect:"/login"}),(req,res)=>{
@@ -154,7 +156,9 @@ router.get("/github/callback",passport.authenticate("github",{session:false,fail
     sameSite:"strict",
    maxAge:60*1000*1000
 });
-res.redirect("/homepage");
+res.redirect("http://localhost:5173/homepage");
+
+
 });
 
 export default router;
