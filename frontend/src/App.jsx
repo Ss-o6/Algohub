@@ -8,6 +8,7 @@ import Dashboards from "./components/screens/Dashboards.jsx";
 import Homepage from "./components/screens/Homepage.jsx";
 import Problempage from "./components/screens/Problempage.jsx";
 import Createproblem from "./components/screens/Create-problem.jsx";
+import Problemdetails from "./components/screens/Problem-details.jsx";
 const App=()=>{
   return (
     <BrowserRouter>
@@ -19,6 +20,7 @@ const App=()=>{
        <Route path="/homepage" element={<Homepage/>}/>
        <Route path="/problems" element={<Problempage/>}/>
        <Route path="/create-problem" element={<Createproblem/>}/>
+       <Route path="/problem/:id" element={<Problemdetails/>}/>
       </Routes>
     </BrowserRouter>
   )
