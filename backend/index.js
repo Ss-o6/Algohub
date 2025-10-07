@@ -9,7 +9,7 @@ import userroute from "./rouites/userroute.js";
 import passport from "passport";
 import session from "express-session";
 import cookieParser  from "cookie-parser";
-
+import execution from "./rouites/execution.js";
 
 import "./config/passportconfig.js";
 dotenv.config();
@@ -44,6 +44,7 @@ app.use(auth);
 app.use(problemroute);
 app.use(contestroute);
 app.use(userroute);
+app.use(execution);
 
 app.listen(port,()=>{
     console.log("server listening on port 5000")

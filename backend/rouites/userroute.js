@@ -56,7 +56,7 @@ router.get("/me", authenticate,async(req,res)=>{
         .status(500).json({message:"Failed to fetch user data",error:error.message});
     }
 });
-router.post("/update-profile", authenticate, async(req,res)=>{
+router.put("/update-profile", authenticate, async(req,res)=>{
     const {fname,lname}=req.body;
     const userid=req.user.id;
     try{
@@ -71,7 +71,7 @@ router.post("/update-profile", authenticate, async(req,res)=>{
         res.status(500).json({message:"Error in updating profile",error});
     }
 });
-router.post("/update-email",authenticate,async(req,res)=>{
+router.put("/update-email",authenticate,async(req,res)=>{
     const{email}=req.body;
     const userid=req.user.id;
     try {

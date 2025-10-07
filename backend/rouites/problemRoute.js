@@ -31,6 +31,33 @@ router.get("/problems/:id",authenticate,async(req,res)=>{
         res.status(404).json({message:"Failed to fetch problem",error:error.message});
     }
 });
+
+
+// Route: GET /problems/:id/issolved
+router.get("/problems/:id/issolved", authenticate, async (req, res) => {
+  try {
+    const problemId = req.params.id;
+    const userId = req.user.id;
+
+    const problem = await Problem.findById(problemId);
+    if (!problem) {
+      return res.status(404).json({ success: false, message: "Problem not found" });
+    }
+
+    // Check if the user has a fully accepted submission
+    const isSolved = problem.submissions.some(
+      (sub) => sub.user === userId && sub.passed === sub.total
+    );
+
+    res.json({ success: true, isSolved });
+  } catch (error) {
+    console.error("Error checking solved status:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
+
 router.post("/addproblem",authenticate,authorizeadmin,async(req,res)=>{
     try {
         const{title,description,inputformat,outputformat,constraints,sampleinput,sampleoutput,difficulty,testcases}=req.body;

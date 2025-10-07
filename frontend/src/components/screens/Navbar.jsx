@@ -4,6 +4,7 @@ import {PersonAdd, Settings, Logout} from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 import { useEffect } from 'react';
 import api from "../../api.js";
+
 const Navbar=()=>{
     const [user,setuser]=useState(null);
     const [anchorEl, setAnchorEl] = useState(null);

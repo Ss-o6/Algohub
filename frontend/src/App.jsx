@@ -9,6 +9,8 @@ import Homepage from "./components/screens/Homepage.jsx";
 import Problempage from "./components/screens/Problempage.jsx";
 import Createproblem from "./components/screens/Create-problem.jsx";
 import Problemdetails from "./components/screens/Problem-details.jsx";
+import Updateprofile from "./components/screens/Update-profile.jsx";
+import Updateemail from "./components/screens/Update-email.jsx";
 const App=()=>{
   return (
     <BrowserRouter>
@@ -20,7 +22,9 @@ const App=()=>{
        <Route path="/homepage" element={<Homepage/>}/>
        <Route path="/problems" element={<Problempage/>}/>
        <Route path="/create-problem" element={<Createproblem/>}/>
-       <Route path="/problem/:id" element={<Problemdetails/>}/>
+       <Route path="/problems/:id" element={<Problemdetails/>}/>
+       <Route path="/update-profile" element={<Updateprofile/>}/>
+       <Route path="/update-email" element={<Updateemail/>}/>
       </Routes>
     </BrowserRouter>
   )

@@ -12,7 +12,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button
+  Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../screens/Navbar.jsx";
@@ -26,6 +26,7 @@ const Problempage = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  // Fetch problems from backend
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,18 +35,18 @@ const Problempage = () => {
         setFilterProblems(res.data.problems);
         setUser(res.data.user);
       } catch (error) {
-        console.error("Error fetching problems");
+        console.error("Error fetching problems", error);
         navigate("/homepage");
       }
     };
     fetchData();
   }, [navigate]);
 
+  // Filter problems based on difficulty and solved status
   useEffect(() => {
     let filtered = problems;
     if (showSolved) filtered = filtered.filter((p) => p.solved === true);
-    if (difficulty !== "all")
-      filtered = filtered.filter((p) => p.difficulty === difficulty);
+    if (difficulty !== "all") filtered = filtered.filter((p) => p.difficulty === difficulty);
     setFilterProblems(filtered);
   }, [showSolved, difficulty, problems]);
 
@@ -56,23 +57,17 @@ const Problempage = () => {
         <Card sx={{ p: 3, borderRadius: "16px", boxShadow: 3 }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
             <Typography variant="h5" fontWeight="bold">
-              Problems:
+              Problems
             </Typography>
 
             <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Checkbox
-                  checked={showSolved}
-                  onChange={(e) => setShowSolved(e.target.checked)}
-                />
+                <Checkbox checked={showSolved} onChange={(e) => setShowSolved(e.target.checked)} />
                 <Typography variant="body2">My Submissions</Typography>
               </Box>
 
               <FormControl size="small">
-                <Select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value)}
-                >
+                <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
                   <MenuItem value="all">All</MenuItem>
                   <MenuItem value="easy">Easy</MenuItem>
                   <MenuItem value="medium">Medium</MenuItem>
@@ -83,14 +78,13 @@ const Problempage = () => {
           </Box>
 
           <Table>
-            <TableHead> 
-                <TableRow sx={{ backgroundColor: "#e3f2fd" }}> {/* Light blue */}
-                 <TableCell sx={{ fontWeight: "bold" }}>#</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
-                   <TableCell sx={{ fontWeight: "bold" }}>Difficulty</TableCell>
-                     <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-                 </TableRow>
-             
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#e3f2fd" }}>
+                <TableCell sx={{ fontWeight: "bold" }}>#</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Difficulty</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {filterProblems.map((problem, index) => (
@@ -102,22 +96,21 @@ const Problempage = () => {
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{problem.title}</TableCell>
-                 <TableCell>
-                           <span
-                              style={{
-                                     color:
-                                     problem.difficulty === "easy"
-                                         ? "green"
-                                   : problem.difficulty === "medium"
-                                        ? "orange"
-                                   : "red",
-                                    fontWeight: "bold"
-                               }}
-                          >
-                        {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
-                             </span>
+                  <TableCell>
+                    <span
+                      style={{
+                        color:
+                          problem.difficulty === "easy"
+                            ? "green"
+                            : problem.difficulty === "medium"
+                            ? "orange"
+                            : "red",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
+                    </span>
                   </TableCell>
-
                   <TableCell>
                     {problem.solved && <span style={{ color: "green", fontWeight: "bold" }}>Solved</span>}
                   </TableCell>
