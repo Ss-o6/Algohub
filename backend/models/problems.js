@@ -18,7 +18,10 @@ const problemschema= new mongoose.Schema({
         result:{type:String,required:true},
         language:{type:String,required:true},
         code:{type:String,required:true},
-        submission: { type: Date, default: Date.now } 
+        submission: { type: Date, default: Date.now },
+         passed: { type: Number, default: 0 },    // number of test cases passed
+       total: { type: Number, default: 0 },     // total number of test cases
+         submission: { type: Date, default: Date.now } 
     }],
     acceptedcount:{type:Number,default:0},
     createdAt:{type:Date, default:Date.now},

@@ -64,6 +64,25 @@ const ProblemDetails = () => {
           <Typography variant="body2">{problem.inputformat}</Typography>
           <Typography variant="subtitle2" sx={{ mt: 2 }}>Output Format</Typography>
           <Typography variant="body2">{problem.outputformat}</Typography>
+          <Typography variant="subtitle2" sx={{ mt: 2 }}>Output Format</Typography>
+<Typography variant="body2">{problem.outputformat}</Typography>
+
+{/* Display first two testcases */}
+{problem.testcases && problem.testcases.length > 0 && (
+  <Box sx={{ mt: 2 }}>
+    <Typography variant="subtitle2">Sample Testcases:</Typography>
+    {problem.testcases.slice(0, 2).map((tc, index) => (
+      <Box key={index} sx={{ mb: 1, p: 1, border: "1px dashed grey", borderRadius: 1 }}>
+        <Typography variant="body2"><strong>Input {index + 1}:</strong> {tc.input}</Typography>
+        <Typography variant="body2"><strong>Output {index + 1}:</strong> {tc.output}</Typography>
+      </Box>
+    ))}
+  </Box>
+)}
+
+<Typography variant="subtitle2" sx={{ mt: 2 }}>Constraints</Typography>
+<Typography variant="body2">{problem.constraints}</Typography>
+
           <Typography variant="subtitle2" sx={{ mt: 2 }}>Constraints</Typography>
           <Typography variant="body2">{problem.constraints}</Typography>
         </Card>
