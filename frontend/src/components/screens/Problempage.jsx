@@ -14,6 +14,9 @@ import {
   TableCell,
   Button,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import { useNavigate } from "react-router-dom";
 import Navbar from "../screens/Navbar.jsx";
 import api from "../../api.js";
@@ -25,7 +28,27 @@ const Problempage = () => {
   const [difficulty, setDifficulty] = useState("all");
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+   const handleDelete = async (problemId) => {
+    if (!window.confirm("Are you sure you want to delete this problem?")) return;
 
+    try {
+      const res = await fetch(`http://localhost:5000/deleteproblem/${problemId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        setProblems((prev) => prev.filter((p) => p._id !== problemId));
+        alert("Problem deleted successfully ✅");
+      } else {
+        const errorData = await res.json();
+        alert(`Failed to delete ❌: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error deleting problem:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
   // Fetch problems from backend
   useEffect(() => {
     const fetchData = async () => {
@@ -84,6 +107,7 @@ const Problempage = () => {
                 <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Difficulty</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+                {user?.role==="admin" && (<TableCell sx={{ fontWeight: "bold" }}></TableCell>)};
               </TableRow>
             </TableHead>
             <TableBody>
@@ -114,6 +138,31 @@ const Problempage = () => {
                   <TableCell>
                     {problem.solved && <span style={{ color: "green", fontWeight: "bold" }}>Solved</span>}
                   </TableCell>
+                   
+                  {user?.role==="admin" && (
+                    <TableCell>
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                       <EditIcon
+                            sx={{ color: "blue", cursor: "pointer" }}
+                            fontSize="small"
+                           onClick={(e) => {
+                             e.stopPropagation(); // prevent row click navigation
+                           navigate(`/edit-problem/${problem._id}`);
+                           }}/>
+                            <DeleteIcon
+                             sx={{ color: "red", cursor: "pointer" }}
+                      fontSize="small"
+                      onClick={(e) => {
+                       e.stopPropagation(); // prevent row click navigation
+                         handleDelete(problem._id);
+                         }}
+                            />
+                       </Box>
+                      
+                      </TableCell> 
+                  )}
+                            
+
                 </TableRow>
               ))}
             </TableBody>

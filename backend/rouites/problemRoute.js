@@ -5,8 +5,9 @@ import{authenticate, authorizeadmin} from "../middleware/requireauth.js";
 const router=express.Router();
 router.get("/problems",authenticate,async(req,res)=>{
      try {
+        console.log("Fetching problems..."); 
         const problems=await Problem.find({});
-        const solvedids= req.user.solvedproblems.map(p=>p.problemID.toString());
+        const solvedids= req.user.solvedproblems.map(p=>p.problem.toString());
         const problemwithstatus=problems.map(p=>({
             _id:p._id,
             title:p.title,

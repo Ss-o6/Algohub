@@ -8,6 +8,7 @@ import { authenticate } from "../middleware/requireauth.js";
 import Problems from "../models/problems.js";
 import User from "../models/users.js";
 
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const router = express.Router();
 
@@ -182,10 +183,50 @@ router.post("/submit/:id", authenticate, async (req, res) => {
       testcaseResults.push({ testcase: i + 1, result: status, passed: status === "Passed" });
       if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
     }
-
-    const submissionObj = { user: userId, username, problem: problem._id, language, code, passed: passedCount, total: testCases.length };
-    await User.findByIdAndUpdate(userId, { $push: { submissions: submissionObj } });
+    const submissionstatus=passedCount===testCases.length? "success":"failed";
+    const submissionObj = { 
+      user: userId, 
+      username, 
+      problem: problem._id,
+       language, 
+       code,
+        passed: passedCount, 
+        total: testCases.length,
+       status:submissionstatus,
+       submittedAt: new Date(),
+      };
+    
     await Problems.findByIdAndUpdate(problem._id, { $push: { submissions: submissionObj } });
+
+    const existing = await User.findOne({_id:userId,"solvedproblems.problem":problem._id});
+    if(existing){
+       await User.updateOne(
+        {_id:userId, "solvedproblems.problem":problem._id},
+      {
+        $set:{  
+            "solvedproblems.$.language": language,
+            "solvedproblems.$.code": code,
+            "solvedproblems.$.passed": passedCount,
+            "solvedproblems.$.total": testCases.length,
+            "solvedproblems.$.status": submissionstatus,
+            "solvedproblems.$.lastSubmitted": new Date()
+
+        }
+      } );
+    }else{
+      await User.findByIdAndUpdate(userId,{
+        $push: { solvedproblems: {
+            problem: problem._id,
+            language,
+            code,
+            passed: passedCount,
+            total: testCases.length,
+            status: submissionstatus,
+            lastSubmitted: new Date(),
+          },
+        }
+      })
+    }
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
     res.json({ success: true, status: passedCount === testCases.length ? "Success" : "Failed", passed: passedCount, total: testCases.length, testcaseResults });

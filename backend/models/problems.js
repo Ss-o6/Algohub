@@ -15,13 +15,14 @@ const problemschema= new mongoose.Schema({
     author:{type:String,required:true},
     submissions:[{
         user:{type:String,required:true},
-        result:{type:String,required:true},
+        username:{type:String,required:true},
         language:{type:String,required:true},
         code:{type:String,required:true},
-        submission: { type: Date, default: Date.now },
+       
          passed: { type: Number, default: 0 },    // number of test cases passed
        total: { type: Number, default: 0 },     // total number of test cases
-         submission: { type: Date, default: Date.now } 
+          status: String, // "Success" or "Failed"
+      submittedAt: { type: Date, default: Date.now }, 
     }],
     acceptedcount:{type:Number,default:0},
     createdAt:{type:Date, default:Date.now},
@@ -29,4 +30,4 @@ const problemschema= new mongoose.Schema({
 
 });
 problemschema.path("submissions").default([]);
-export default mongoose.model("problem",problemschema);
+export default mongoose.model("problems",problemschema);

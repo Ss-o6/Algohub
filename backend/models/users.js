@@ -34,12 +34,16 @@ const userschema=new mongoose.Schema({
     role:{type:String,default:"user"},
     registrationdate:{type:Date,default:Date.now},
     solvedproblems: [
-        {
-            problemID: { type: mongoose.Schema.Types.ObjectId, ref: "Problem" },
-            language: { type: String, required: true },
-            submissionDate: Date
-        }
-    ],
+    {
+      problem: { type: mongoose.Schema.Types.ObjectId, ref: "problems" },
+      language: String,
+      code: String,
+      passed: Number,
+      total: Number,
+      status: String, // "Success" or "Failed"
+      lastSubmitted: { type: Date, default: Date.now }
+    }
+  ],
     participatedcontests: [
         {
             contestID: { type: mongoose.Schema.Types.ObjectId, ref: "Contest" },
